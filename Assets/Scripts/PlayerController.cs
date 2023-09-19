@@ -22,11 +22,15 @@ public class PlayerController : MonoBehaviour {
 
 	private float fallLimit = -1.0f;
 
+	public AudioClip ticTacSound;
+	private float lastTicTacTime;
+
 
 	void Start () {
 		rb = GetComponent<Rigidbody>();
 		audioSource = GetComponent<AudioSource>();
 		count = 0;
+		lastTicTacTime = -1f;
 		currentTime = gameTime;
 		timerText.text = "Time: " + Mathf.Round(currentTime).ToString() + "s";
 		SetCountText ();
@@ -39,11 +43,16 @@ public class PlayerController : MonoBehaviour {
 		currentTime -= Time.fixedDeltaTime;
 
 		if (currentTime <= 10) {
-        timerText.color = Color.red;
+			timerText.color = Color.red;
+
+			if (Mathf.Floor(currentTime) != lastTicTacTime) {
+				audioSource.PlayOneShot(ticTacSound);
+				lastTicTacTime = Mathf.Floor(currentTime);
+			}
 		} else {
 			timerText.color = Color.white;
 		}
-		timerText.text = "Time: " + Mathf.Round(currentTime).ToString() + "s";
+				timerText.text = "Time: " + Mathf.Round(currentTime).ToString() + "s";
 
 		if (currentTime <= 0 || transform.position.y < fallLimit) {
 		    EndGame();
